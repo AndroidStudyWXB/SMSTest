@@ -41,8 +41,10 @@ public class MainActivity extends AppCompatActivity {
         content = (TextView) findViewById(R.id.content);
         to = (EditText) findViewById(R.id.to);
         msgInput = (EditText) findViewById(R.id.msg_input);
+
         receiveFilter = new IntentFilter();
         receiveFilter.addAction("android.provider.Telephony.SMS_RECEIVED");
+        receiveFilter.setPriority(100);
         sendFilter = new IntentFilter();
         sendFilter.addAction("SENT_SMS_ACTION");
 
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(messageReceiver);
+        unregisterReceiver(sendStatusReceiver);
     }
 
     class MessageReceiver extends BroadcastReceiver {
@@ -90,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 fullMessage += message.getMessageBody();
             }
 
-            Log.d("Test", fullMessage);
+            Toast.makeText(context, fullMessage, Toast.LENGTH_LONG).show();
 
             sender.setText(address);
             content.setText(fullMessage);
